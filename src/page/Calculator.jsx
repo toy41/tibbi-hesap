@@ -225,7 +225,7 @@ function Cha2ds2Calc({ calc }) {
                     <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
                       <tr>
                         <th className="py-2 px-3 font-semibold text-center w-16">Puan</th>
-                        <th className="py-2 px-3 font-semibold text-center">İskemik İnme Oranı<br/><span className="font-normal opacity-70">(100 Hasta Yılı)</span></th>
+                        <th className="py-2 px-3 font-semibold text-center">İskemik İnme Görülme Oranı<br/><span className="font-normal opacity-70">(100 Hasta Yılı Başına)</span></th>
                         <th className="py-2 px-3 font-semibold">Tavsiye</th>
                       </tr>
                     </thead>
