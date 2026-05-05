@@ -164,7 +164,7 @@ function Cha2ds2Calc({ calc }) {
             </div>
           )}
 
-          {/* SEKME 2: KANIT (YENİ GÜNCELLENEN KISIM) */}
+          {/* SEKME 2: KANIT */}
           {activeTab === "kanit" && (
             <div className="space-y-6 animate-fade-in text-sm text-gray-700 text-left">
               
@@ -258,12 +258,50 @@ function Cha2ds2Calc({ calc }) {
                 </div>
               </div>
 
-              {/* Edebiyat */}
+              {/* Edebiyat (YENİ EKLENEN TIKLANABİLİR LİNKLER) */}
               <div>
-                <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
-                <a href="#" className="text-blue-600 hover:underline font-medium text-sm flex items-center gap-1">
-                  Orijinal/Birincil Referans
-                </a>
+                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
+                
+                <div className="space-y-4">
+                  {/* Orijinal/Birincil Referans */}
+                  <div>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Orijinal/Birincil Referans</div>
+                    <a 
+                      href="https://pubmed.ncbi.nlm.nih.gov/39217497/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
+                    >
+                      Champsi A, Mobley AR, Subramanian A ve diğerleri. Atriyal fibrilasyonda cinsiyet ve güncel olumsuz olay riski. Avrupa Kalp Dergisi. 2024;45(36):3707-3717.
+                    </a>
+                  </div>
+
+                  {/* Doğrulama */}
+                  <div>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Doğrulama</div>
+                    <a 
+                      href="https://pubmed.ncbi.nlm.nih.gov/39171253/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
+                    >
+                      Teppo K, Lip GYH, Airaksinen KEJ ve diğerleri. Atriyal fibrilasyonlu hastalarda inme riski sınıflandırması için CHA2DS2-VA ve CHA2DS2-VASc skorlarının karşılaştırılması: Retrospektif Finlandiya Atriyal Fibrilasyonda Antikoagülan Tedavi (Finacaf) kohortundan zamansal eğilim analizi. The Lancet Regional Health - Europe. 2024;43:100967.
+                    </a>
+                  </div>
+
+                  {/* Klinik Uygulama Kılavuzları */}
+                  <div>
+                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Klinik Uygulama Kılavuzları</div>
+                    <a 
+                      href="https://pubmed.ncbi.nlm.nih.gov/39210723/" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
+                    >
+                      Van Gelder IC, Rienstra M, Bunting KV, ve diğerleri. Avrupa Kardiyotorasik Cerrahi Birliği (EACTS) ile işbirliği içinde geliştirilen atriyal fibrilasyonun yönetimi için 2024 ESC kılavuzları. Avrupa Kalp Dergisi. 2024;45(36):3314-3414.
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -271,12 +309,11 @@ function Cha2ds2Calc({ calc }) {
           {/* SEKME 3: İÇERİK OLUŞTURUCUSU */}
           {activeTab === "icerik" && (
             <div className="animate-fade-in text-sm text-gray-700 border border-gray-100 p-4 rounded-xl bg-gray-50 text-left">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">Prof. Dr. Gregory Y. H. Lip</h3>
+              <h3 className="font-bold text-lg text-gray-900 mb-1">Dr. Asgher Champsi</h3>
               <p className="text-gray-500 text-xs mb-3">Kardiyovasküler Tıp Uzmanı</p>
               <p className="leading-relaxed mb-4">
-                Dr. Lip, Birleşik Krallık'taki Liverpool Üniversitesi'nde Kardiyovasküler Tıp Profesörü ve Liverpool Kalp ve Göğüs Hastanesi'nde onursal danışman kardiyologdur. Atriyal fibrilasyon araştırmalarında küresel bir öncüdür ve CHA₂DS₂-VASc ile HAS-BLED skorlarının orijinal geliştiricisidir.
-              </p>
-              <a href="#" className="text-blue-600 hover:underline font-medium text-xs">
+              </p>Asgher Champsi, MD, Birmingham Üniversitesi'nde klinik araştırma görevlisi ve kardiyoloji uzmanı asistanıdır. Atriyal fibrilasyon ve kalp yetmezliği olan hastaların bakımını iyileştirmek için büyük veri, makine öğrenimi ve yapay zekayı kullanma konusunda uzmanlaşmıştır.
+              <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Champsi+A+%5Bauthor%5D&sort=date" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium text-xs">
                 Yayınlarını PubMed'de Görüntüle →
               </a>
             </div>
