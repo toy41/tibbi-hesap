@@ -4,15 +4,13 @@ export const calculators = [
     name: "CHA₂DS₂-VASc",
     description: "AF'de inme riski skoru",
     category: "kardiyoloji",
-    type: "checklist",
+    type: "cha2ds2", 
     items: [
       { label: "Konjestif kalp yetmezliği", pts: 1 },
       { label: "Hipertansiyon", pts: 1 },
-      { label: "Yaş ≥ 75", pts: 2 },
       { label: "Diyabetes mellitus", pts: 1 },
       { label: "İnme / TİA öyküsü", pts: 2 },
       { label: "Vasküler hastalık", pts: 1 },
-      { label: "Yaş 65–74", pts: 1 },
       { label: "Kadın cinsiyet", pts: 1 },
     ],
     interpret: [
