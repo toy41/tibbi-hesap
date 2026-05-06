@@ -1,8 +1,8 @@
 export const calculators = [
   {
     id: "cha2ds2",
-    name: "CHA₂DS₂-VASc",
-    description: "AF'de inme riski skoru",
+    name: "Atriyal Fibrilasyon İnme Riski için CHA₂DS₂-VA Skoru",
+    description: "Atriyal fibrilasyonlu hastalar için inme riskini hesaplar; CHA₂DS₂-VASc Skoru'na benzer ancak cinsiyeti dikkate almaz.",
     category: "kardiyoloji",
     type: "cha2ds2", 
     items: [
@@ -21,18 +21,18 @@ export const calculators = [
   },
   {
     id: "wells-pe",
-    name: "Wells PE Skoru",
-    description: "Pulmoner emboli klinik olasılığı",
+    name: "Wells'in Pulmoner Emboli Kriterleri",
+    description: "Pulmoner emboli riskini objektif bir şekilde değerlendirir.",
     category: "acil",
     type: "checklist",
     items: [
-      { label: "DVT klinik bulgusu", pts: 3 },
-      { label: "Alternatif tanı PE'den daha az olası", pts: 3 },
+      { label: "DVT’nin klinik bulguları ve belirtileri", pts: 3 },
+      { label: "PE en olası tanıdır veya aynı olasılıkta", pts: 3 },
       { label: "Kalp hızı > 100/dk", pts: 1.5 },
-      { label: "Son 3 haftada immobilizasyon / cerrahi", pts: 1.5 },
-      { label: "Önceki DVT veya PE", pts: 1.5 },
+      { label: "En az 3 gün süreyle hareketsiz kalma VEYA önceki 4 hafta içinde ameliyat geçirme", pts: 1.5 },
+      { label: "Daha önce objektif olarak teşhis edilmiş PE veya DVT", pts: 1.5 },
       { label: "Hemoptizi", pts: 1 },
-      { label: "Malignite (aktif)", pts: 1 },
+      { label: "Son 6 ay içinde tedavi görmüş malignite veya palyatif tedavi", pts: 1 },
     ],
     interpret: [
       { max: 1, cls: "low", text: "Düşük olasılık — D-dimer ile ekarte edilebilir." },
@@ -42,7 +42,7 @@ export const calculators = [
   },
   {
     id: "gks",
-    name: "Glasgow Koma Skalası",
+    name: "Glasgow Koma Skalası (GCS)",
     description: "Bilinç düzeyi değerlendirmesi",
     category: "noroloji",
     type: "gks",
