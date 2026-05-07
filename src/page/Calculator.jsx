@@ -15,6 +15,7 @@ function getInterp(interpret, score) {
 }
 
 // --- DİĞER HESAPLAYICILAR İÇİN SEKME BİLEŞENİ (CHA2DS2 HARİÇ) ---
+// --- HER HESAPLAYICI İÇİN ÖZEL METİNLERİ BARINDIRAN SEKME BİLEŞENİ ---
 function InfoTabs({ calcId }) {
   const [activeTab, setActiveTab] = useState("sonraki");
 
@@ -22,17 +23,49 @@ function InfoTabs({ calcId }) {
     switch (calcId) {
       case "gks":
         return {
-          tavsiye: ["GKS, hastanın nörolojik durumundaki değişiklikleri izlemek için seri olarak değerlendirilmelidir.", "GKS'de 2 veya daha fazla puanlık bir düşüş acil müdahale gerektirebilir."],
-          yonetim: [
-            { score: "GKS ≤ 8 (Ağır):", cls: "bg-red-50 text-red-800 border-red-100", text: "Hava yolunu koruyamama riski yüksektir. Entübasyon güçlü bir şekilde düşünülmelidir." },
-            { score: "GKS 9-12 (Orta):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Yakın takip ve genellikle Beyin Tomografisi (BT) endikasyonu vardır." },
-            { score: "GKS 13-15 (Hafif):", cls: "bg-green-50 text-green-800 border-green-100", text: "Düşük riskli grup. Klinik duruma göre gözlem planlanabilir." }
+          tavsiye: [
+            "GCS skoru, hastanın ne kadar kritik durumda olduğunun göstergesi olabilir.",
+            "Glasgow Koma Ölçeği (GCS) değeri 15'in altında olan travma hastaları yakından izlenmeli ve yeniden değerlendirilmelidir.",
+            "Glasgow Koma Ölçeği'nde (GCS) düşüş her durumda endişe vericidir ve solunum yolunun değerlendirilmesini ve olası müdahaleyi gerektirmelidir.",
+            "Öte yandan, 15'lik bir GCS skoru, hastanın (travma veya tıbbi) kritik durumda olmadığı anlamına gelmemelidir. Tedavi planlarının agresifliği hakkındaki kararlar, klinik tablo ve bağlam dikkate alınarak verilmeli ve hiçbir şekilde GCS skoru tarafından geçersiz kılınmamalıdır."
           ],
-          formul: "GKS Skoru; Göz (1-4) + Sözel (1-5) + Motor (1-6) yanıtların toplanmasıyla elde edilir.",
+          yonetim: [], // Özel tasarım aşağıda yapıldı
+          formul: [
+            "Glasgow Koma Skoru, aşağıda her bir bileşen (göz, sözel, motor) altında seçilen toplam puanların toplanmasıyla hesaplanır, örneğin '15 puan'.",
+            "Glasgow Koma Ölçeği, 'E(4) V(5) M (6)' gibi bireysel bileşenlerden oluşmaktadır."
+          ],
           stats: [
-            { pts: "≤ 8", rate: "Ağır Yaralanma", rec: "Entübasyon Düşün", color: "text-red-700" },
-            { pts: "9-12", rate: "Orta Yaralanma", rec: "Yakın Takip/BT", color: "text-yellow-700" },
-            { pts: "13-15", rate: "Hafif Yaralanma", rec: "Gözlem/Taburcu", color: "text-green-700" }
+            { bileşen: "Göz", cevap: "Gözler kendiliğinden açılır.", puan: "+4" },
+            { bileşen: "", cevap: "Sözlü komuta dair ufuk açıcı bir bakış açısı.", puan: "+3" },
+            { bileşen: "", cevap: "Acıya dair göz açıcı bir deneyim.", puan: "+2" },
+            { bileşen: "", cevap: "Göz açıcı değil", puan: "+1" },
+            { bileşen: "", cevap: "Test edilemez*", puan: "NT" },
+            { bileşen: "Sözlü", cevap: "Yönlendirilmiş", puan: "+5" },
+            { bileşen: "", cevap: "Kafası karışmış", puan: "+4" },
+            { bileşen: "", cevap: "Uygunsuz kelimeler", puan: "+3" },
+            { bileşen: "", cevap: "Anlaşılmaz sesler", puan: "+2" },
+            { bileşen: "", cevap: "Sözlü yanıt yok.", puan: "+1" },
+            { bileşen: "", cevap: "Test edilemiyor/entübe edilemiyor*", puan: "NT" },
+            { bileşen: "Motor", cevap: "Komutlara itaat eder.", puan: "+6" },
+            { bileşen: "", cevap: "Ağrıyı lokalize eder.", puan: "+5" },
+            { bileşen: "", cevap: "Ağrıdan uzaklaşma", puan: "+4" },
+            { bileşen: "", cevap: "Ağrıya kadar bükülme", puan: "+3" },
+            { bileşen: "", cevap: "Ağrının genişlemesi", puan: "+2" },
+            { bileşen: "", cevap: "Motor tepki yok.", puan: "+1" },
+            { bileşen: "", cevap: "Test edilemez*", puan: "NT" },
+          ],
+          degerlendirme: [
+            "Modifiye Glasgow Koma Ölçeği (14 puanlık orijinal GCS Ölçeği'nin aksine, Glasgow'daki orijinal birim de dahil olmak üzere yaygın olarak benimsenen 15 puanlık ölçek), yatarak tedavi gören hastalarda zihinsel durumdaki değişiklikleri değerlendirmek ve iletmek ve koma süresini ölçmek için tekrarlanan bir şekilde kullanılmak üzere geliştirilmiştir (Teasdale 1974).",
+            "Reith ve ark. tarafından yapılan sistematik bir incelemede, ölçeğin tekrarlanabilirliğine ilişkin 53 yayınlanmış rapordaki kanıtlar sentezlendi. Daha yüksek kaliteli çalışmalardaki bulguların %85'i, 0,6'nın üzerinde bir kappa istatistiği (k) standart kriterine göre değerlendirildiğinde önemli bir güvenilirlik gösterdi. Toplam GCS Puanının tekrarlanabilirliği de yüksekti ve gözlemlerin %77'sinde kappa 0,6'dan büyüktü. Ölçeğin kullanımına ilişkin eğitim ve öğretim, güvenilirlik üzerinde açık bir olumlu etki yarattı (Reith 2016).",
+            "En yaygın kullanımında, ölçeğin üç bölümü genellikle şiddetin bir özetini sağlamak için toplanır. Yazarların kendileri de puanın bu şekilde kullanılmasına açıkça itiraz etmişlerdir ve analizler, aynı toplam puana sahip hastaların sonuçlarında, özellikle de ölüm oranlarında büyük farklılıklar olabileceğini göstermiştir (GCS puanı 4 olan bir hasta, göz, sözel ve motor için 1+1+2 olarak hesaplandığında %48, 1+2+1 olarak hesaplandığında %27, ancak 2+1+1 olarak hesaplandığında sadece %19 ölüm oranı öngörür (Healey 2014)).",
+            "Özetle, Modifiye Glasgow Koma Ölçeği, akut beyin hasarı olan hastaları değerlendirmek için neredeyse evrensel olarak kabul görmüş bir yöntem sunmaktadır. Bileşenlerinin tek bir genel puana toplanması bilgi kaybına yol açar ve şiddet konusunda yalnızca kaba bir kılavuz sağlar. Bazı durumlarda, örneğin ciddi yaralanmaların erken triyajında, ölçeğin motor bileşeninin kısaltılmış bir versiyonunun, Basitleştirilmiş Motor Ölçeği'nde (SMS) olduğu gibi, değerlendirilmesi GCS kadar iyi sonuç verebilir ve önemli ölçüde daha az karmaşıktır. Bununla birlikte, SMS daha hafif yaralanmaları olan hastalarda daha az bilgilendirici olabilir."
+          ],
+          edebiyat: [
+            { kat: "Orijinal/Birincil Referans", ref: "Teasdale G, Jennett B. Koma ve bozulmuş bilinç değerlendirmesi. Pratik bir ölçek. Lancet. 1974 13 Temmuz;2(7872):81-4." },
+            { kat: "Doğrulama", ref: "Moore L, Lavoie A, Camden S, Le Sage N, Sampalis JS, Bergeron E, Abdous B. Glasgow Koma Skoru'nun istatistiksel doğrulanması. J Trauma. 2006 Haziran;60(6):1238-43." },
+            { ref: "Reith FC, Van den brande R, Synnot A, Gruen R, Maas AI. Glasgow Koma Ölçeğinin güvenilirliği: sistematik bir inceleme. Yoğun Bakım Tıbbı. 2016;42(1):3-15." },
+            { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B. Koma ve beyin hasarının şiddetinin değerlendirilmesi. Anesteziyoloji. 1978;49:225-226." },
+            { ref: "Teasdale G, Jennett B, Murray L, Murray G. Glasgow koma ölçeği: toplamak ya da toplamamak. Lancet. 1983 Eylül 17;2(8351):678." }
           ],
           creator: { name: "Prof. Graham Teasdale & Prof. Bryan Jennett", title: "Nöroşirürji Uzmanları", bio: "Skala, 1974 yılında Glasgow Üniversitesi'nde kafa travması geçiren hastaların bilinç düzeyini standartlaştırmak amacıyla geliştirilmiştir." }
         };
@@ -44,7 +77,7 @@ function InfoTabs({ calcId }) {
             { score: "2 - 6 Puan (Orta):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "PE ihtimali orta düzeydedir (~%16.2). D-Dimer veya görüntüleme düşünün." },
             { score: "< 2 Puan (Düşük):", cls: "bg-green-50 text-green-800 border-green-100", text: "PE ihtimali düşüktür (~%1.3). Negatif D-Dimer tanıyı ekarte ettirir." }
           ],
-          formul: "Klinik değerlendirme sonucunda pozitif olan bulguların puanları toplanır.",
+          formul: ["Klinik değerlendirme sonucunda pozitif olan bulguların puanları toplanır."],
           stats: [
             { pts: "< 2", rate: "~%1.3", rec: "D-Dimer Yeterli", color: "text-green-700" },
             { pts: "> 6", rate: "~%40.6", rec: "BT Anjiyo İste", color: "text-red-700" }
@@ -59,12 +92,12 @@ function InfoTabs({ calcId }) {
             { score: "BMI 25-29.9 (Fazla Kilolu):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Sağlıklı beslenme ve düzenli egzersiz hedeflenmelidir." },
             { score: "BMI < 18.5 (Zayıf):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Beslenme yetersizliği açısından değerlendirme gerektirir." }
           ],
-          formul: "BMI = Ağırlık (kg) / Boy² (m²)",
+          formul: ["BMI = Ağırlık (kg) / Boy² (m²)"],
           stats: [
             { pts: "18.5-24.9", rate: "Normal", rec: "Sağlıklı Aralık", color: "text-green-700" },
             { pts: "≥ 30", rate: "Obez", rec: "Riskli", color: "text-red-700" }
           ],
-          creator: { name: "Adolphe Quetelet", title: "Matematikçi", bio: "BMI'ın temeli olan Quetelet İndeksi'ni 1832 yılında insan büyüme oranlarını tanımlamak için geliştirmiştir." }
+          creator: { name: "Adolphe Quetelet", title: "Matematikçi", bio: "BMI'ın temeli olan Quetelet İndeksi'ni 1832 yılında insan büyüme oranlarını tanımlamak için geliştirilmiştir." }
         };
       default:
         return null;
@@ -86,55 +119,129 @@ function InfoTabs({ calcId }) {
         <div className="space-y-4 animate-fade-in text-left">
           <div className="p-4 rounded-xl border border-blue-100 bg-blue-50">
             <h3 className="font-bold text-blue-900 mb-2 border-b border-blue-200 pb-1">TAVSİYE</h3>
-            {data.tavsiye.map((t, i) => <p key={i} className={`text-blue-800 text-sm leading-relaxed ${i === 0 ? "mb-2" : "font-semibold"}`}>{t}</p>)}
+            <ul className="space-y-2">
+              {data.tavsiye.map((t, i) => {
+                if (calcId === "gks" && (i === 1 || i === 2)) {
+                  return <li key={i} className="ml-5 list-disc text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
+                }
+                return <li key={i} className="list-none text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
+              })}
+            </ul>
           </div>
+          
           <div className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">YÖNETMEK</h3>
-            <div className="space-y-3">
-              {data.yonetim.map((y, i) => (
-                <div key={i} className={`p-3 rounded-lg border ${y.cls}`}>
-                  <div className="font-bold mb-1">{y.score}</div>
-                  <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
+            {calcId === "gks" ? (
+              <div className="space-y-5">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
+                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
+                    <li>Akut dönemde klinik yönetim kararları yalnızca GCS skoruna dayandırılmamalıdır.</li>
+                    <li>Travma geçiren bir hastanın Glasgow Koma Ölçeği (GCS) değeri ≤8 ise ve muayene veya görüntüleme bulgularına dayanarak hastanın hava yolunu koruyamayacağına veya klinik seyrinin kötüleşmesinin beklendiğine dair klinik endişe varsa, entübasyon düşünülebilir.</li>
+                    <li>Herhangi bir hastada, Glasgow Koma Ölçeği'nde (GCS) hızla düşüş veya dalgalanmalar endişe vericidir ve entübasyon, hastanın genel klinik tablosu bağlamında değerlendirilmelidir.</li>
+                  </ul>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal mb-4">
+                    <li>GCS skoru yaygın olarak ve çeşitli ortamlarda benimsenmiş olsa da, nicel amaçlarla kullanılmak üzere tasarlanmamıştır.</li>
+                    <li>Akut dönemde klinik yönetim kararları yalnızca GCS skoruna dayandırılmamalıdır.</li>
+                  </ul>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal mb-1">GCS'nin yaratıcılarından:</p>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
+                    “GCS’nin tek başına, ne komayı izlemek ne de beyin hasarının şiddetini değerlendirmek veya sonucu tahmin etmek için kullanılmasını hiçbir zaman önermedik.” (
+                    <a href="https://cdn.ps.emap.com/wp-content/uploads/sites/3/2014/10/141015Forty-years-on-updating-the-Glasgow-coma-scale.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Teasdale 2014</a>
+                    )
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">YÖNETMEK</h3>
+                {data.yonetim.map((y, i) => (
+                  <div key={i} className={`p-3 rounded-lg border ${y.cls}`}>
+                    <div className="font-bold mb-1">{y.score}</div>
+                    <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {activeTab === "kanit" && (
-        <div className="space-y-6 animate-fade-in text-sm text-gray-700 text-left">
+        <div className="space-y-8 animate-fade-in text-sm text-gray-700 text-left">
           <div>
             <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">FORMÜL</h3>
-            <p className="leading-relaxed mb-3">{data.formul}</p>
+            {data.formul.map((f, idx) => <p key={idx} className="leading-relaxed mb-2">{f}</p>)}
           </div>
-          <div>
-            <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
-            <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-              <table className="w-full text-left bg-white text-xs">
-                <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
-                  <tr>
-                    <th className="py-2.5 px-3 font-semibold text-center w-16">Puan</th>
-                    <th className="py-2.5 px-3 font-semibold text-center">İnme Oranı<br/><span className="text-[10px] opacity-60">(100 Hasta Yılı)</span></th>
-                    <th className="py-2.5 px-3 font-semibold">Tavsiye</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {data.stats.map((s, i) => (
-                    <tr key={i}>
-                      <td className="py-2.5 px-3 font-bold text-center">{s.pts}</td>
-                      <td className="py-2.5 px-3 text-center">{s.rate}</td>
-                      {s.rec && (
-                        <td className={`py-2.5 px-3 font-medium ${s.color}`} rowSpan={s.rowspan || 1} style={s.rowspan ? { verticalAlign: 'top', paddingTop: '10px' } : {}}>
-                          {s.rec}
-                        </td>
-                      )}
-                    </tr>
+
+          {calcId === "gks" ? (
+            <>
+              <div>
+                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+                <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                  <table className="w-full text-left bg-white text-xs">
+                    <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
+                      <tr><th className="py-2.5 px-3 font-semibold">Bileşen</th><th className="py-2.5 px-3 font-semibold">Cevap</th><th className="py-2.5 px-3 font-semibold text-center">Puanlar</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {data.stats.map((s, i) => (
+                        <tr key={i}>
+                          <td className="py-2.5 px-3 font-bold text-gray-900">{s.bileşen}</td>
+                          <td className="py-2.5 px-3 text-gray-600">{s.cevap}</td>
+                          <td className="py-2.5 px-3 text-center font-bold text-gray-800">{s.puan}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic">
+                  *Aşağıdakilerden herhangi biri nedeniyle bazı bileşenler test edilemeyebilir (bu liste kapsamlı değildir):<br/>
+                  Göz: Yerel yaralanma ve/veya ödem. Sözel: entübasyon. Tüm (göz, sözel, motor): sedasyon, paralizi ve ventilasyon yoluyla tüm tepkilerin ortadan kaldırılması.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Kanıt Değerlendirmesi</h3>
+                <div className="space-y-4 leading-relaxed text-gray-600">
+                  {data.degerlendirme.map((p, idx) => <p key={idx}>{p}</p>)}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
+                <div className="space-y-4">
+                  {data.edebiyat.map((ref, idx) => (
+                    <div key={idx}>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{ref.kat}</div>
+                      <p className="text-[13px] text-blue-600 leading-relaxed">{ref.ref}</p>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+              <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <table className="w-full text-left bg-white text-xs">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
+                    <tr><th className="py-2.5 px-3 font-semibold text-center">Skor</th><th className="py-2.5 px-3 font-semibold text-center">Oran</th><th className="py-2.5 px-3 font-semibold">Tavsiye</th></tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {data.stats.map((s, i) => (
+                      <tr key={i}>
+                        <td className="py-2.5 px-3 font-bold text-center">{s.pts}</td>
+                        <td className="py-2.5 px-3 text-center">{s.rate}</td>
+                        <td className={`py-2.5 px-3 font-medium ${s.color}`}>{s.rec}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -148,7 +255,6 @@ function InfoTabs({ calcId }) {
     </div>
   );
 }
-
 // 1. CHA2DS2 BİLEŞENİ (KESİNLİKLE DOKUNULMAMIŞ HALİ)
 function Cha2ds2Calc({ calc }) {
   const [checked, setChecked] = useState({});
