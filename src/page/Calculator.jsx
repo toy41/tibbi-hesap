@@ -14,7 +14,28 @@ function getInterp(interpret, score) {
   return interpret?.find((i) => score <= i.max) || interpret?.[interpret.length - 1];
 }
 
-// --- DİĞER HESAPLAYICILAR İÇİN SEKME BİLEŞENİ (CHA2DS2 HARİÇ) ---
+// --- YARDIMCI BİLEŞEN (Odaklanma sorunu olmaması için BmiCalc'ın DIŞINA alındı) ---
+const InputRow = ({ label, subLabel, value, onChange, unit, placeholder }) => (
+  <div className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-gray-100 last:border-0">
+    <div className="mb-2 md:mb-0 md:mr-4 flex-1">
+      <label className="text-gray-800 font-medium">{label}</label>
+      {subLabel && <p className="text-xs text-gray-500 mt-1">{subLabel}</p>}
+    </div>
+    <div className="flex items-center w-full md:w-1/2 bg-white border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-shadow">
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-4 py-2.5 outline-none text-gray-800"
+      />
+      <div className="bg-gray-50 px-4 py-2.5 border-l border-gray-300 text-sm text-gray-600 whitespace-nowrap min-w-[90px] text-center">
+        {unit}
+      </div>
+    </div>
+  </div>
+);
+
 // --- HER HESAPLAYICI İÇİN ÖZEL METİNLERİ BARINDIRAN SEKME BİLEŞENİ ---
 function InfoTabs({ calcId }) {
   const [activeTab, setActiveTab] = useState("sonraki");
@@ -29,7 +50,7 @@ function InfoTabs({ calcId }) {
             "Glasgow Koma Ölçeği'nde (GCS) düşüş her durumda endişe vericidir ve solunum yolunun değerlendirilmesini ve olası müdahaleyi gerektirmelidir.",
             "Öte yandan, 15'lik bir GCS skoru, hastanın (travma veya tıbbi) kritik durumda olmadığı anlamına gelmemelidir. Tedavi planlarının agresifliği hakkındaki kararlar, klinik tablo ve bağlam dikkate alınarak verilmeli ve hiçbir şekilde GCS skoru tarafından geçersiz kılınmamalıdır."
           ],
-          yonetim: [], // Özel tasarım aşağıda yapıldı
+          yonetim: [], 
           formul: [
             "Glasgow Koma Skoru, aşağıda her bir bileşen (göz, sözel, motor) altında seçilen toplam puanların toplanmasıyla hesaplanır, örneğin '15 puan'.",
             "Glasgow Koma Ölçeği, 'E(4) V(5) M (6)' gibi bireysel bileşenlerden oluşmaktadır."
@@ -63,44 +84,127 @@ function InfoTabs({ calcId }) {
           edebiyat: [
             { kat: "Orijinal/Birincil Referans", ref: "Teasdale G, Jennett B. Koma ve bozulmuş bilinç değerlendirmesi. Pratik bir ölçek. Lancet. 1974 13 Temmuz;2(7872):81-4." },
             { kat: "Doğrulama", ref: "Moore L, Lavoie A, Camden S, Le Sage N, Sampalis JS, Bergeron E, Abdous B. Glasgow Koma Skoru'nun istatistiksel doğrulanması. J Trauma. 2006 Haziran;60(6):1238-43." },
-            { ref: "Reith FC, Van den brande R, Synnot A, Gruen R, Maas AI. Glasgow Koma Ölçeğinin güvenilirliği: sistematik bir inceleme. Yoğun Bakım Tıbbı. 2016;42(1):3-15." },
+            { kat: "Doğrulama", ref: "Reith FC, Van den brande R, Synnot A, Gruen R, Maas AI. Glasgow Koma Ölçeğinin güvenilirliği: sistematik bir inceleme. Yoğun Bakım Tıbbı. 2016;42(1):3-15." },
             { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B. Koma ve beyin hasarının şiddetinin değerlendirilmesi. Anesteziyoloji. 1978;49:225-226." },
-            { ref: "Teasdale G, Jennett B, Murray L, Murray G. Glasgow koma ölçeği: toplamak ya da toplamamak. Lancet. 1983 Eylül 17;2(8351):678." }
+            { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B, Murray L, Murray G. Glasgow koma ölçeği: toplamak ya da toplamamak. Lancet. 1983 Eylül 17;2(8351):678." }
           ],
           creator: { name: "Prof. Graham Teasdale & Prof. Bryan Jennett", title: "Nöroşirürji Uzmanları", bio: "Skala, 1974 yılında Glasgow Üniversitesi'nde kafa travması geçiren hastaların bilinç düzeyini standartlaştırmak amacıyla geliştirilmiştir." }
         };
       case "wells-pe":
         return {
-          tavsiye: ["Düşük riskli hastalarda PERC kuralı uygulanabilir.", "Tanıda klinik olasılığa göre D-Dimer veya BT Anjiyo seçilir."],
-          yonetim: [
-            { score: "> 6 Puan (Yüksek):", cls: "bg-red-50 text-red-800 border-red-100", text: "Pulmoner Emboli ihtimali yüksektir (~%40.6). Doğrudan BT Anjiyografi istenmelidir." },
-            { score: "2 - 6 Puan (Orta):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "PE ihtimali orta düzeydedir (~%16.2). D-Dimer veya görüntüleme düşünün." },
-            { score: "< 2 Puan (Düşük):", cls: "bg-green-50 text-green-800 border-green-100", text: "PE ihtimali düşüktür (~%1.3). Negatif D-Dimer tanıyı ekarte ettirir." }
+          tavsiye: [
+            "Bazıları, düşük riskli kişileri tahmin etmek için klinik değerlendirmeden ziyade Wells skorunu kullanmayı ve ardından PERC kuralını uygulayarak pulmoner emboli (PE) araştırmalarını durdurmayı savunmaktadır.",
+            "Tüm klinik karar destek araçlarında olduğu gibi, hekimin Wells kriterlerini uygulamaya geçmeden önce öncelikle tanıdan şüphelenmesi gerekir.",
+            "Bu aracın asıl amacı, d-dimer testi yapılmasına gerek kalmayacak kadar düşük riskli olan kişileri belirlemekti.",
+            "Yaşa göre ayarlanmış d-dimer eşik değerleri, düşük riskli hastalarda (rGeneva 'yüksek değil' veya Wells düşük) 50 yaş üstü hastalarda kullanım için doğrulanmıştır. Uygun d-dimer testini kullanıyorsanız, yaşa göre ayarlanmış d-dimer eşik değerini şu şekilde hesaplamayı düşünün: Yaş (yıl) × 10 µg/L = eşik değer (50 yaş üstü hastalar için).",
+            "Hem iki hem de üç kademeli modeller kabul edilmekle birlikte, kılavuzlar yalnızca yüksek hassasiyetli d-dimer kullanan ve daha muhafazakar risk sınıflandırmasına dayanan iki kademeli modeli tercih ediyor gibi görünüyor; 'orta' riskli hastaların, daha fazla risk sınıflandırması yapılmadan değerlendirilmesi için hala çok yüksek riskli olduğu düşünülüyor."
           ],
+          yonetim: [], 
           formul: ["Klinik değerlendirme sonucunda pozitif olan bulguların puanları toplanır."],
-          stats: [
-            { pts: "< 2", rate: "~%1.3", rec: "D-Dimer Yeterli", color: "text-green-700" },
-            { pts: "> 6", rate: "~%40.6", rec: "BT Anjiyo İste", color: "text-red-700" }
+          statsThreeTier: [
+            { pts: "0 - 1", risk: "Düşük Risk" },
+            { pts: "2 - 6", risk: "Orta Risk" },
+            { pts: "> 6", risk: "Yüksek Risk" }
+          ],
+          statsTwoTier: [
+            { pts: "≤ 4", risk: "PE Olası Değil (d-dimer ile)" },
+            { pts: "≥ 5", risk: "PE Olası (BT Anjiyo ile)" }
+          ],
+          degerlendirme: [
+            { type: "p", text: "Orijinal Wells çalışması, PE prevalansının yüksek olduğu (yaklaşık %30) kohortlarda gerçekleştirilmiştir. Acil serviste yapılan iki ek çalışma bu aracı %9,5-%12 PE prevalansı ile doğrulamıştır." },
+            { type: "p", text: "En büyük çalışma aşağıdaki risk sınıflandırmasını göstermiştir:" },
+            { type: "ul", items: [
+              "0-1 düşük puan: %1,3 prevalans.", 
+              "2-6 orta puan: %16,2 prevalans.", 
+              ">6 yüksek puan: %37,5 prevalans."
+            ]},
+            { type: "p", text: "Christopher çalışması Wells puanlama sistemini 2 kategoriye ayırmıştır:" },
+            { type: "ul", items: [
+              "4 veya daha düşük puan 'PE olası değil' olarak tanımlandı ve d-dimer ile test edildi.",
+              "5 veya daha yüksek bir puan 'PE olası' olarak tanımlandı ve doğrudan BT Anjiyografiye (CTA) yönlendirildi.",
+              "Genel PE görülme sıklığı 'olası değil' grubunda %12,1 iken, 'olası' grubunda %37,1 idi.",
+              "Dimer negatif ise başka test yapılmadı.",
+              "Dimer pozitif ise hasta CTA'ya yönlendirildi.",
+              "CTA'ya giden tüm hastaların %20,4'ünde PE tanısı mevcuttu.",
+              "'PE olası değil' grubunda, negatif dimer ile eve taburcu edilenlerde 3 aylık takipte gözden kaçan PE insidansı %0,5 idi."
+            ]}
+          ],
+          edebiyat: [
+            { kat: "Orijinal/Birincil Referans", ref: "Wells PS, Anderson DR, Rodger M, Stiell I, Dreyer JF, Barnes D, Forgie M, Kovacs G, Ward J, Kovacs MJ. Excluding pulmonary embolism at the bedside without diagnostic imaging: management of patients with suspected pulmonary embolism presenting to the emergency department by using a simple clinical model and d-dimer. Ann Intern Med. 2001 Jul 17;135(2):98-107." },
+            { kat: "Doğrulama", ref: "Wolf SJ, McCubbin TR, Feldhaus KM, Faragher JP, Adcock DM. Prospective validation of Wells Criteria in the evaluation of patients with suspected pulmonary embolism. Ann Emerg Med. 2004 Nov;44(5):503-10." },
+            { kat: "Diğer Referanslar", ref: "van Belle A, Buller HR, Huisman MV, et al. Effectiveness of managing suspected pulmonary embolism using an algorithm combining clinical probability, D-dimer testing, and computed tomography. JAMA : the journal of the American Medical Association. Jan 11 2006;295(2):172-179." }
           ],
           creator: { name: "Dr. Philip S. Wells", title: "Hematoloji Profesörü", bio: "Ottawa Üniversitesi'nde Hematoloji Bölüm Başkanıdır. Venöz tromboembolizm teşhisinde dünyaca ünlü Wells skorlarının yaratıcısıdır." }
         };
       case "bmi":
         return {
-          tavsiye: ["BMI doğrudan vücut yağını ölçmez. Kaslı sporcularda veya ödemi olanlarda yanıltıcı olabilir.", "Bel çevresi ile birlikte değerlendirilmelidir."],
-          yonetim: [
-            { score: "BMI ≥ 30 (Obezite):", cls: "bg-red-50 text-red-800 border-red-100", text: "Kardiyovasküler hastalık riski artmıştır. Diyetisyen yönlendirmesi önerilir." },
-            { score: "BMI 25-29.9 (Fazla Kilolu):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Sağlıklı beslenme ve düzenli egzersiz hedeflenmelidir." },
-            { score: "BMI < 18.5 (Zayıf):", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Beslenme yetersizliği açısından değerlendirme gerektirir." }
+          tavsiye: [
+            "Zayıf veya aşırı kilolu olduğu tespit edilen hastalar için, uygun görüldüğü takdirde daha ileri beslenme veya fiziksel değerlendirmeler ve yönlendirmeler yapılmalıdır.",
+            "Fazla kilolu veya obez teşhisi konulan kişilere diyet ve egzersiz konusunda danışmanlık verilmelidir.",
+            "Özellikle kemoterapi gibi ilaç dozlamasıyla ilgili durumlarda, tedavi sonuçlarını optimize etmek için vücut yüzey alanındaki değişikliklere bağlı olarak düzenli izleme ve doz ayarlamaları gereklidir."
           ],
-          formul: ["BMI = Ağırlık (kg) / Boy² (m²)"],
-          stats: [
-            { pts: "18.5-24.9", rate: "Normal", rec: "Sağlıklı Aralık", color: "text-green-700" },
-            { pts: "≥ 30", rate: "Obez", rec: "Riskli", color: "text-red-700" }
+          yonetimMetni: "Tedavi, yalnızca BMI veya BSA ölçümlerine değil, bu değerler diğer vücut ölçümleri ve genel klinik tabloyla birlikte değerlendirilmelidir.",
+          kritikMetni: "Vücut Kitle İndeksi (BMI) ≥30 kg/m² olması tek başına obezite tanısı koymaya yeterlidir ; başka bir doğrulama testi veya ölçüme gerek yoktur (",
+          kritikLink: { text: "Rubino ve ark., 2025", url: "https://pubmed.ncbi.nlm.nih.gov/39824205/" },
+          kritikMetniSon: ").",
+          formul: [
+            "Vücut kitle indeksi, kg/m² = ağırlık, kg / (boy, m)²", 
+            "Vücut yüzey alanı (Mosteller formülü), m² = [ Boy, cm × Ağırlık, kg / 3600 ]^½"
+          ],
+          statsBmi: [
+            { bmi: "< 18.5", weight: "Zayıf" },
+            { bmi: "18.5–24.9", weight: "Normal ağırlık" },
+            { bmi: "25.0–29.9", weight: "Fazla kilolu*" },
+            { bmi: "30.0–34.9", weight: "Obez 1. Sınıf*" },
+            { bmi: "35.0–39.9", weight: "Obez 2. Sınıf" },
+            { bmi: "≥ 40.0", weight: "Obez 3. Sınıf" }
+          ],
+          dipnot: "*Tipik sınıflandırma Asya popülasyonlarında obezite ile ilişkili kardiyovasküler hastalık riskini hafife alabileceğinden, DSÖ ve NIH gibi kuruluşlar bu bireyler için daha düşük BMI eşikleri önermektedir. Bu bağlamda, \"fazla kilolu\" olmak 23-24,9 kg/m² BMI ve \"obezite\" ise ≥25 kg/m² BMI olarak tanımlanmaktadır.",
+          edebiyat: [
+            { kat: "Orijinal/Birincil Referans", ref: "Gadzik J. 'How much should I weigh?' Quetelet's equation, upper weight limits, and BMI prime. Connecticut Medicine. (2006). 70 (2): 81–8. PMID 16768059.", link: "https://pubmed.ncbi.nlm.nih.gov/16768059/" },
+            { kat: "Klinik Uygulama Kılavuzları", ref: "Rubino F, Cummings DE, Eckel RH, et al. Definition and diagnostic criteria of clinical obesity. Lancet Diabetes Endocrinol. 2025;13(3):221-262.", link: "https://pubmed.ncbi.nlm.nih.gov/39824205/" },
+            { kat: "Diğer Referanslar", ref: "BMI Classification. Global Database on Body Mass Index. World Health Organization. 2006. Retrieved July 27, 2012." },
+            { ref: "Support Removal of BMI as a Standard Measure in Medicine and Recognizing Culturally-Diverse and Varied Presentations of Eating Disorders H-440.800. Retrieved March 17, 2025." },
+            { ref: "Adult BMI Categories, Centers for Disease Control and Prevention. Retrieved March 16, 2025." }
           ],
           creator: { name: "Adolphe Quetelet", title: "Matematikçi", bio: "BMI'ın temeli olan Quetelet İndeksi'ni 1832 yılında insan büyüme oranlarını tanımlamak için geliştirilmiştir." }
         };
+      case "cha2ds2":
       default:
-        return null;
+        return {
+          tavsiye: [
+            "Bu aracın sonuçlarını, kapsamlı değerlendirme, klinik yargı, uzman önerileri ve hasta tercihiyle birlikte, atriyal fibrilasyonda tromboembolik riskin yönetimine rehberlik etmek için kullanın.",
+            "Felç riskini periyodik aralıklarla yeniden değerlendirin."
+          ],
+          yonetim: [
+            { score: "2 veya daha yüksek puan:", cls: "bg-red-50 text-red-800 border-red-100", text: "Felç riskini azaltmak için oral antikoagülan tedavi önerilir. Kanama riskini değerlendirmek için bir kanama riski skorlama sistemi (örneğin, ATRIA, DOAC, HAS-BLED, HEMORR₂HAGES, ORBIT) kullanmayı düşünün." },
+            { score: "1 puan:", cls: "bg-yellow-50 text-yellow-800 border-yellow-100", text: "Antikoagülasyonun risklerini ve faydalarını değerlendirmek için klinik yargınızı kullanın." },
+            { score: "0 puan:", cls: "bg-green-50 text-green-800 border-green-100", text: "Antikoagülasyon önerilmez." }
+          ],
+          formul: ["CHA₂DS₂-VA Skoru, her bir değişken için seçilen puanların toplanmasıyla belirlenir:"],
+          stats: [
+            { pts: "0", rate: "0.5", rec: "Antikoagülasyon önerilmemektedir.", color: "text-green-700" },
+            { pts: "1", rate: "1.5", rec: "Antikoagülasyon düşünülmelidir.", color: "text-yellow-700" },
+            { pts: "2", rate: "2.9", rec: "Antikoagülasyon önerilmelidir.", color: "text-red-700", rowspan: 7 },
+            { pts: "3", rate: "5.1" },
+            { pts: "4", rate: "7.3" },
+            { pts: "5", rate: "11.2" },
+            { pts: "6", rate: "15.5" },
+            { pts: "7", rate: "14.7" },
+            { pts: "8", rate: "19.5" }
+          ],
+          edebiyat: [
+            { kat: "Orijinal/Birincil Referans", ref: "Champsi A, Mobley AR, Subramanian A ve diğerleri. Atriyal fibrilasyonda cinsiyet ve güncel olumsuz olay riski. Avrupa Kalp Dergisi. 2024;45(36):3707-3717.", link: "https://pubmed.ncbi.nlm.nih.gov/39217497/" },
+            { kat: "Doğrulama", ref: "Teppo K, Lip GYH, Airaksinen KEJ ve diğerleri. Atriyal fibrilasyonlu hastalarda inme riski sınıflandırması için CHA2DS2-VA ve CHA2DS2-VASc skorlarının karşılaştırılması: Retrospektif Finlandiya Atriyal Fibrilasyonda Antikoagülan Tedavi (Finacaf) kohortundan zamansal eğilim analizi. The Lancet Regional Health - Europe. 2024;43:100967.", link: "https://pubmed.ncbi.nlm.nih.gov/39171253/" },
+            { kat: "Klinik Uygulama Kılavuzları", ref: "Van Gelder IC, Rienstra M, Bunting KV, ve diğerleri. Avrupa Kardiyotorasik Cerrahi Birliği (EACTS) ile işbirliği içinde geliştirilen atriyal fibrilasyonun yönetimi için 2024 ESC kılavuzları. Avrupa Kalp Dergisi. 2024;45(36):3314-3414.", link: "https://pubmed.ncbi.nlm.nih.gov/39210723/" }
+          ],
+          creator: { 
+            name: "Dr. Asgher Champsi", 
+            title: "Kardiyovasküler Tıp Uzmanı", 
+            bio: "Asgher Champsi, MD, Birmingham Üniversitesi'nde klinik araştırma görevlisi ve kardiyoloji uzmanı asistanıdır. Atriyal fibrilasyon ve kalp yetmezliği olan hastaların bakımını iyileştirmek için büyük veri, makine öğrenimi ve yapay zekayı kullanma konusunda uzmanlaşmıştır.",
+            link: "https://pubmed.ncbi.nlm.nih.gov/?term=Champsi+A+%5Bauthor%5D&sort=date"
+          }
+        };
     }
   };
 
@@ -123,6 +227,12 @@ function InfoTabs({ calcId }) {
               {data.tavsiye.map((t, i) => {
                 if (calcId === "gks" && (i === 1 || i === 2)) {
                   return <li key={i} className="ml-5 list-disc text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
+                }
+                if (calcId === "wells-pe" && i !== 0 && i !== data.tavsiye.length - 1) {
+                   return <li key={i} className="ml-5 list-disc text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
+                }
+                if (calcId === "bmi") {
+                   return <li key={i} className="ml-5 list-disc text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
                 }
                 return <li key={i} className="list-none text-blue-800 text-sm leading-relaxed font-normal">{t}</li>;
               })}
@@ -154,6 +264,89 @@ function InfoTabs({ calcId }) {
                   </p>
                 </div>
               </div>
+            ) : calcId === "wells-pe" ? (
+              <div className="space-y-5">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
+                  
+                  {/* Üç Katmanlı Model */}
+                  <div className="mb-4">
+                    <h4 className="font-bold text-gray-800 text-sm mb-2 underline">Üç Katmanlı Model</h4>
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-lg border bg-green-50 border-green-100">
+                        <div className="font-bold mb-1 text-green-800">Hastanın düşük riskli olduğu belirlendi (&lt;2 puan: %1,3 PE görülme sıklığı):</div>
+                        <div className="text-sm leading-relaxed text-green-700 mb-2">Pulmoner emboliyi ekarte etmek için d-dimer testi düşünülebilir. Alternatif olarak, PERC gibi bir ekarte etme kriteri düşünülebilir.</div>
+                        <ul className="list-disc ml-5 text-sm text-green-700">
+                          <li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li>
+                          <li>Dimer pozitif ise CTA'yı değerlendirin.</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg border bg-yellow-50 border-yellow-100">
+                        <div className="font-bold mb-1 text-yellow-800">Hastanın orta riskli olduğu belirlendi (2-6 puan arası skor, %16,2 PE görülme sıklığı):</div>
+                        <div className="text-sm leading-relaxed text-yellow-700 mb-2">Yüksek hassasiyetli d-dimer testi veya BT anjiyografisi düşünülmelidir.</div>
+                        <ul className="list-disc ml-5 text-sm text-yellow-700">
+                          <li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li>
+                          <li>Dimer pozitif ise CTA'yı değerlendirin.</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3 rounded-lg border bg-red-50 border-red-100">
+                        <div className="font-bold mb-1 text-red-800">Hastanın yüksek riskli olduğu belirlendi (skor &gt;6 puan: %37,5 PE görülme sıklığı):</div>
+                        <div className="text-sm leading-relaxed text-red-700">BT anjiyografisi düşünülmelidir. D-dimer testi önerilmemektedir.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* İki Katmanlı Model */}
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-sm mb-2 underline">İki Katmanlı Model</h4>
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-lg border bg-green-50 border-green-100">
+                        <div className="font-bold mb-1 text-green-800">Hastanın riski "PE olasılığı düşük" olarak belirlenmiştir (0-4 puan, %12,1 PE görülme sıklığı):</div>
+                        <div className="text-sm leading-relaxed text-green-700 mb-2">Yüksek hassasiyetli d-dimer testi düşünülmelidir.</div>
+                        <ul className="list-disc ml-5 text-sm text-green-700">
+                          <li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li>
+                          <li>Dimer pozitif ise CTA'yı değerlendirin.</li>
+                        </ul>
+                      </div>
+
+                      <div className="p-3 rounded-lg border bg-red-50 border-red-100">
+                        <div className="font-bold mb-1 text-red-800">Hastanın riski "PE olasılığı yüksek" olarak belirlenmiştir (&gt;4 puan, %37,1 PE görülme sıklığı):</div>
+                        <div className="text-sm leading-relaxed text-red-700">BT anjiyografi (CTA) testi düşünülmelidir.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
+                    <li>Yeni nesil d-dimer'in yüksek duyarlılığı ancak düşük özgüllüğü (yaklaşık %50) göz önüne alındığında, yüksek riskli kabul edilen hastaların BT anjiyografi ile değerlendirilmesi gerekmektedir.</li>
+                    <li>Özellikle durumu stabil olmayan hastalarda, canlandırma çabalarını asla tanı testleri için geciktirmeyin.</li>
+                    <li>Tanı testlerinden önce mutlaka anamnez ve muayene yapılmalıdır.</li>
+                  </ul>
+                </div>
+              </div>
+            ) : calcId === "bmi" ? (
+              <div className="space-y-5">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
+                    {data.yonetimMetni}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
+                    {data.kritikMetni}
+                    <a href={data.kritikLink.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">
+                      {data.kritikLink.text}
+                    </a>
+                    {data.kritikMetniSon}
+                  </p>
+                </div>
+              </div>
             ) : (
               <div className="space-y-3">
                 <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">YÖNETMEK</h3>
@@ -171,74 +364,155 @@ function InfoTabs({ calcId }) {
 
       {activeTab === "kanit" && (
         <div className="space-y-8 animate-fade-in text-sm text-gray-700 text-left">
+          
+          {/* 1. FORMÜL ALANI (Tüm Hesaplayıcılar İçin Ortak) */}
           <div>
             <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">FORMÜL</h3>
             {data.formul.map((f, idx) => <p key={idx} className="leading-relaxed mb-2">{f}</p>)}
           </div>
 
+          {/* 2. GERÇEKLER VE RAKAMLAR / TABLOLAR ALANI (Hesaplayıcıya Özel) */}
           {calcId === "gks" ? (
-            <>
-              <div>
-                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+              <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <table className="w-full text-left bg-white text-xs">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
+                    <tr><th className="py-2.5 px-3 font-semibold">Bileşen</th><th className="py-2.5 px-3 font-semibold">Cevap</th><th className="py-2.5 px-3 font-semibold text-center">Puanlar</th></tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {data.stats.map((s, i) => (
+                      <tr key={i}>
+                        <td className="py-2.5 px-3 font-bold text-gray-900">{s.bileşen}</td>
+                        <td className="py-2.5 px-3 text-gray-600">{s.cevap}</td>
+                        <td className="py-2.5 px-3 text-center font-bold text-gray-800">{s.puan}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic">
+                *Aşağıdakilerden herhangi biri nedeniyle bazı bileşenler test edilemeyebilir (bu liste kapsamlı değildir):<br/>
+                Göz: Yerel yaralanma ve/veya ödem. Sözel: entübasyon. Tüm (göz, sözel, motor): sedasyon, paralizi ve ventilasyon yoluyla tüm tepkilerin ortadan kaldırılması.
+              </p>
+            </div>
+          ) : calcId === "wells-pe" ? (
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+              <p className="text-sm font-semibold text-gray-800 mb-3">Puan Yorumlama:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                 <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                  <div className="bg-gray-50 py-2.5 px-3 border-b border-gray-200 font-bold text-xs text-gray-700 uppercase">Üç Katmanlı Model</div>
                   <table className="w-full text-left bg-white text-xs">
-                    <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
-                      <tr><th className="py-2.5 px-3 font-semibold">Bileşen</th><th className="py-2.5 px-3 font-semibold">Cevap</th><th className="py-2.5 px-3 font-semibold text-center">Puanlar</th></tr>
+                    <thead className="bg-white border-b border-gray-200 text-gray-500">
+                      <tr><th className="py-2.5 px-3 font-semibold w-24">Skor</th><th className="py-2.5 px-3 font-semibold">Risk Kategorisi</th></tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                      {data.stats.map((s, i) => (
-                        <tr key={i}>
-                          <td className="py-2.5 px-3 font-bold text-gray-900">{s.bileşen}</td>
-                          <td className="py-2.5 px-3 text-gray-600">{s.cevap}</td>
-                          <td className="py-2.5 px-3 text-center font-bold text-gray-800">{s.puan}</td>
-                        </tr>
+                      {data.statsThreeTier.map((s, i) => (
+                        <tr key={i}><td className="py-2.5 px-3 font-bold text-gray-900">{s.pts}</td><td className="py-2.5 px-3 text-gray-600">{s.risk}</td></tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-                <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic">
-                  *Aşağıdakilerden herhangi biri nedeniyle bazı bileşenler test edilemeyebilir (bu liste kapsamlı değildir):<br/>
-                  Göz: Yerel yaralanma ve/veya ödem. Sözel: entübasyon. Tüm (göz, sözel, motor): sedasyon, paralizi ve ventilasyon yoluyla tüm tepkilerin ortadan kaldırılması.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Kanıt Değerlendirmesi</h3>
-                <div className="space-y-4 leading-relaxed text-gray-600">
-                  {data.degerlendirme.map((p, idx) => <p key={idx}>{p}</p>)}
+                <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                  <div className="bg-gray-50 py-2.5 px-3 border-b border-gray-200 font-bold text-xs text-gray-700 uppercase">İki Katmanlı Model</div>
+                  <table className="w-full text-left bg-white text-xs">
+                    <thead className="bg-white border-b border-gray-200 text-gray-500">
+                      <tr><th className="py-2.5 px-3 font-semibold w-24">Skor</th><th className="py-2.5 px-3 font-semibold">Risk Kategorisi</th></tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {data.statsTwoTier.map((s, i) => (
+                        <tr key={i}><td className="py-2.5 px-3 font-bold text-gray-900">{s.pts}</td><td className="py-2.5 px-3 text-gray-600">{s.risk}</td></tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-
-              <div>
-                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
-                <div className="space-y-4">
-                  {data.edebiyat.map((ref, idx) => (
-                    <div key={idx}>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{ref.kat}</div>
-                      <p className="text-[13px] text-blue-600 leading-relaxed">{ref.ref}</p>
-                    </div>
-                  ))}
-                </div>
+            </div>
+          ) : calcId === "bmi" ? (
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
+              <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <table className="w-full text-left bg-white text-xs">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
+                    <tr><th className="py-2.5 px-3 font-semibold">BMI, kg/m²</th><th className="py-2.5 px-3 font-semibold">Ağırlık Durumu</th></tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {data.statsBmi.map((s, i) => (
+                      <tr key={i}>
+                        <td className="py-2.5 px-3 font-bold text-gray-900 w-32">{s.bmi}</td>
+                        <td className="py-2.5 px-3 text-gray-600">{s.weight}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            </>
+              <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic">
+                {data.dipnot}
+              </p>
+            </div>
           ) : (
             <div>
               <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
               <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                 <table className="w-full text-left bg-white text-xs">
                   <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
-                    <tr><th className="py-2.5 px-3 font-semibold text-center">Skor</th><th className="py-2.5 px-3 font-semibold text-center">Oran</th><th className="py-2.5 px-3 font-semibold">Tavsiye</th></tr>
+                    <tr><th className="py-2.5 px-3 font-semibold text-center">Skor / Puan</th><th className="py-2.5 px-3 font-semibold text-center">Oran</th><th className="py-2.5 px-3 font-semibold">Tavsiye</th></tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {data.stats.map((s, i) => (
                       <tr key={i}>
                         <td className="py-2.5 px-3 font-bold text-center">{s.pts}</td>
                         <td className="py-2.5 px-3 text-center">{s.rate}</td>
-                        <td className={`py-2.5 px-3 font-medium ${s.color}`}>{s.rec}</td>
+                        <td className={`py-2.5 px-3 font-medium ${s.color}`} rowSpan={s.rowspan || 1} style={s.rowspan ? { verticalAlign: 'top', paddingTop: '10px' } : {}}>
+                          {s.rec}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+
+          {/* 3. KANIT DEĞERLENDİRMESİ ALANI (Sadece GKS ve Wells'te var) */}
+          {data.degerlendirme && (
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Kanıt Değerlendirmesi</h3>
+              <div className="space-y-4 leading-relaxed text-gray-600">
+                {data.degerlendirme.map((item, idx) => {
+                  if (typeof item === "string") return <p key={idx}>{item}</p>;
+                  if (item.type === "p") return <p key={idx}>{item.text}</p>;
+                  if (item.type === "ul") return (
+                    <ul key={idx} className="list-disc ml-5 space-y-1.5 pb-2">
+                      {item.items.map((li, i) => <li key={i}>{li}</li>)}
+                    </ul>
+                  );
+                  return null;
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 4. EDEBİYAT ALANI (Tüm Hesaplayıcılar İçin Ortak, Linkleri Destekler) */}
+          {data.edebiyat && (
+            <div>
+              <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
+              <div className="space-y-4">
+                {data.edebiyat.map((ref, idx) => (
+                  <div key={idx}>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{ref.kat}</div>
+                    {ref.link ? (
+                      <a href={ref.link} target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-600 leading-relaxed break-words hover:underline cursor-pointer block">
+                        {ref.ref}
+                      </a>
+                    ) : (
+                      <p className="text-[13px] text-blue-600 leading-relaxed break-words hover:underline cursor-pointer">
+                        {ref.ref}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -250,17 +524,22 @@ function InfoTabs({ calcId }) {
           <h3 className="font-bold text-lg text-gray-900 mb-1">{data.creator.name}</h3>
           <p className="text-gray-500 text-xs mb-3 uppercase tracking-wide font-semibold">{data.creator.title}</p>
           <p className="leading-relaxed mb-4">{data.creator.bio}</p>
+          {data.creator.link && (
+            <a href={data.creator.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium text-xs">
+              Yayınlarını PubMed'de Görüntüle →
+            </a>
+          )}
         </div>
       )}
     </div>
   );
 }
-// 1. CHA2DS2 BİLEŞENİ (KESİNLİKLE DOKUNULMAMIŞ HALİ)
+
+// 1. CHA2DS2 BİLEŞENİ
 function Cha2ds2Calc({ calc }) {
   const [checked, setChecked] = useState({});
   const [age, setAge] = useState(null);
   const [result, setResult] = useState(null);
-  const [activeTab, setActiveTab] = useState("sonraki");
 
   const toggle = (i) => {
     setChecked((prev) => {
@@ -283,7 +562,6 @@ function Cha2ds2Calc({ calc }) {
 
   return (
     <div>
-      {/* ÖZEL YAŞ SEÇİMİ */}
       <div className="mb-4">
         <label className="text-sm text-gray-500 mb-2 block font-medium">Yaş Aralığı</label>
         <div className="flex gap-2">
@@ -308,7 +586,6 @@ function Cha2ds2Calc({ calc }) {
         </div>
       </div>
 
-      {/* DİĞER MADDELER */}
       {calc.items.map((item, i) => (
         <div
           key={i}
@@ -331,7 +608,6 @@ function Cha2ds2Calc({ calc }) {
         Hesapla
       </button>
 
-      {/* SONUÇ VE SEKMELER ALANI */}
       {result && (
         <div className="mt-6 border-t border-gray-100 pt-6">
           <div className="p-4 rounded-xl border border-gray-100 bg-white shadow-sm mb-5 text-center">
@@ -341,232 +617,14 @@ function Cha2ds2Calc({ calc }) {
               {result.interp.text}
             </div>
           </div>
-
-          {/* Sekme Butonları */}
-          <div className="flex gap-2 mb-4 bg-gray-50 p-1 rounded-xl border border-gray-100">
-            {[
-              { id: "sonraki", label: "Sonraki Adımlar" },
-              { id: "kanit", label: "Kanıt" },
-              { id: "icerik", label: "İçerik Oluşturucusu" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-2 text-xs font-semibold rounded-lg transition ${
-                  activeTab === tab.id
-                    ? "bg-white text-blue-700 shadow-sm"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* SEKME 1: SONRAKİ ADIMLAR */}
-          {activeTab === "sonraki" && (
-            <div className="space-y-4 animate-fade-in text-left">
-              <div className="p-4 rounded-xl border border-blue-100 bg-blue-50">
-                <h3 className="font-bold text-blue-900 mb-2 border-b border-blue-200 pb-1">TAVSİYE</h3>
-                <p className="text-blue-800 text-sm leading-relaxed mb-2">
-                  Bu aracın sonuçlarını, kapsamlı değerlendirme, klinik yargı, uzman önerileri ve hasta tercihiyle birlikte, atriyal fibrilasyonda tromboembolik riskin yönetimine rehberlik etmek için kullanın.
-                </p>
-                <p className="text-blue-800 text-sm leading-relaxed font-semibold">
-                  Felç riskini periyodik aralıklarla yeniden değerlendirin.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
-                <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">YÖNETMEK</h3>
-                <div className="space-y-3">
-                  <div className="p-3 rounded-lg border border-red-100 bg-red-50">
-                    <div className="font-bold text-red-800 mb-1">2 veya daha yüksek puan:</div>
-                    <div className="text-red-700 text-sm leading-relaxed">
-                      Felç riskini azaltmak için oral antikoagülan tedavi önerilir.<br/>
-                      <span className="mt-1 inline-block">Kanama riskini değerlendirmek için bir kanama riski skorlama sistemi (örneğin, <strong>ATRIA, DOAC, HAS-BLED, HEMORR₂HAGES, ORBIT</strong>) kullanmayı düşünün.</span>
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-lg border border-yellow-100 bg-yellow-50">
-                    <div className="font-bold text-yellow-800 mb-1">1 puan:</div>
-                    <div className="text-yellow-700 text-sm leading-relaxed">
-                      Antikoagülasyonun risklerini ve faydalarını değerlendirmek için klinik yargınızı kullanın.
-                    </div>
-                  </div>
-                  <div className="p-3 rounded-lg border border-green-100 bg-green-50">
-                    <div className="font-bold text-green-800 mb-1">0 puan:</div>
-                    <div className="text-green-700 text-sm leading-relaxed">
-                      Antikoagülasyon önerilmez.
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 italic">
-                  Ek öneriler için lütfen ESC'nin AF yönetimiyle ilgili kılavuzlarına bakın.
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* SEKME 2: KANIT */}
-          {activeTab === "kanit" && (
-            <div className="space-y-6 animate-fade-in text-sm text-gray-700 text-left">
-              
-              {/* Formül */}
-              <div>
-                <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">FORMÜL</h3>
-                <p className="leading-relaxed mb-3">
-                  CHA₂DS₂-VA Skoru, her bir değişken için seçilen puanların toplanmasıyla belirlenir:
-                </p>
-                <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                  <table className="w-full text-left bg-white">
-                    <thead className="bg-gray-50 border-b border-gray-200 text-xs text-gray-600">
-                      <tr>
-                        <th className="py-2 px-3 font-semibold">Değişken</th>
-                        <th className="py-2 px-3 font-semibold text-right">Puanlar</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800 align-top">Yaş</td>
-                        <td className="py-2 px-3 text-right text-gray-600 leading-relaxed">
-                          &lt;65: <span className="font-bold text-gray-800">0</span><br/>
-                          65-74: <span className="font-bold text-gray-800">1</span><br/>
-                          ≥75: <span className="font-bold text-gray-800">2</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800">Kronik kalp yetmezliği</td>
-                        <td className="py-2 px-3 text-right text-gray-600">HAYIR <span className="font-bold text-gray-800 ml-1">0</span> / Evet <span className="font-bold text-gray-800 ml-1">1</span></td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800">Hipertansiyon</td>
-                        <td className="py-2 px-3 text-right text-gray-600">HAYIR <span className="font-bold text-gray-800 ml-1">0</span> / Evet <span className="font-bold text-gray-800 ml-1">1</span></td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800">Daha önce geçirilmiş inme, geçici iskemik atak veya arteriyel tromboembolizm</td>
-                        <td className="py-2 px-3 text-right text-gray-600">HAYIR <span className="font-bold text-gray-800 ml-1">0</span> / Evet <span className="font-bold text-gray-800 ml-1">2</span></td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800">Vasküler hastalık</td>
-                        <td className="py-2 px-3 text-right text-gray-600">HAYIR <span className="font-bold text-gray-800 ml-1">0</span> / Evet <span className="font-bold text-gray-800 ml-1">1</span></td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-medium text-gray-800">Diyabet mellitus</td>
-                        <td className="py-2 px-3 text-right text-gray-600">HAYIR <span className="font-bold text-gray-800 ml-1">0</span> / Evet <span className="font-bold text-gray-800 ml-1">1</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Gerçekler ve Rakamlar */}
-              <div>
-                <h3 className="font-bold text-gray-900 mb-2 border-b pb-1 uppercase tracking-wider text-xs">Gerçekler ve Rakamlar</h3>
-                <p className="text-xs text-gray-500 mb-2 italic">Tercüme:</p>
-                <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                  <table className="w-full text-left bg-white text-xs">
-                    <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
-                      <tr>
-                        <th className="py-2 px-3 font-semibold text-center w-16">Puan</th>
-                        <th className="py-2 px-3 font-semibold text-center">İskemik İnme Görülme Oranı<br/><span className="font-normal opacity-70">(100 Hasta Yılı Başına)</span></th>
-                        <th className="py-2 px-3 font-semibold">Tavsiye</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-2 px-3 font-bold text-center">0</td>
-                        <td className="py-2 px-3 text-center">0.5</td>
-                        <td className="py-2 px-3 font-medium text-green-700">Antikoagülasyon önerilmemektedir.</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-bold text-center">1</td>
-                        <td className="py-2 px-3 text-center">1.5</td>
-                        <td className="py-2 px-3 font-medium text-yellow-700">Antikoagülasyon düşünülmelidir.</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-3 font-bold text-center">2</td>
-                        <td className="py-2 px-3 text-center">2.9</td>
-                        <td className="py-2 px-3 font-medium text-red-700" rowSpan="7" style={{ verticalAlign: 'top', paddingTop: '12px' }}>
-                          Antikoagülasyon önerilmelidir.
-                        </td>
-                      </tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">3</td><td className="py-2 px-3 text-center">5.1</td></tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">4</td><td className="py-2 px-3 text-center">7.3</td></tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">5</td><td className="py-2 px-3 text-center">11.2</td></tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">6</td><td className="py-2 px-3 text-center">15.5</td></tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">7</td><td className="py-2 px-3 text-center">14.7</td></tr>
-                      <tr><td className="py-2 px-3 font-bold text-center">8</td><td className="py-2 px-3 text-center">19.5</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Edebiyat (YENİ EKLENEN TIKLANABİLİR LİNKLER) */}
-              <div>
-                <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Edebiyat</h3>
-                
-                <div className="space-y-4">
-                  {/* Orijinal/Birincil Referans */}
-                  <div>
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Orijinal/Birincil Referans</div>
-                    <a 
-                      href="https://pubmed.ncbi.nlm.nih.gov/39217497/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
-                    >
-                      Champsi A, Mobley AR, Subramanian A ve diğerleri. Atriyal fibrilasyonda cinsiyet ve güncel olumsuz olay riski. Avrupa Kalp Dergisi. 2024;45(36):3707-3717.
-                    </a>
-                  </div>
-
-                  {/* Doğrulama */}
-                  <div>
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Doğrulama</div>
-                    <a 
-                      href="https://pubmed.ncbi.nlm.nih.gov/39171253/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
-                    >
-                      Teppo K, Lip GYH, Airaksinen KEJ ve diğerleri. Atriyal fibrilasyonlu hastalarda inme riski sınıflandırması için CHA2DS2-VA ve CHA2DS2-VASc skorlarının karşılaştırılması: Retrospektif Finlandiya Atriyal Fibrilasyonda Antikoagülan Tedavi (Finacaf) kohortundan zamansal eğilim analizi. The Lancet Regional Health - Europe. 2024;43:100967.
-                    </a>
-                  </div>
-
-                  {/* Klinik Uygulama Kılavuzları */}
-                  <div>
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Klinik Uygulama Kılavuzları</div>
-                    <a 
-                      href="https://pubmed.ncbi.nlm.nih.gov/39210723/" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 hover:text-blue-800 hover:underline text-sm leading-relaxed block"
-                    >
-                      Van Gelder IC, Rienstra M, Bunting KV, ve diğerleri. Avrupa Kardiyotorasik Cerrahi Birliği (EACTS) ile işbirliği içinde geliştirilen atriyal fibrilasyonun yönetimi için 2024 ESC kılavuzları. Avrupa Kalp Dergisi. 2024;45(36):3314-3414.
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* SEKME 3: İÇERİK OLUŞTURUCUSU */}
-          {activeTab === "icerik" && (
-            <div className="animate-fade-in text-sm text-gray-700 border border-gray-100 p-4 rounded-xl bg-gray-50 text-left">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">Dr. Asgher Champsi</h3>
-              <p className="text-gray-500 text-xs mb-3">Kardiyovasküler Tıp Uzmanı</p>
-              <p className="leading-relaxed mb-4">
-              </p>Asgher Champsi, MD, Birmingham Üniversitesi'nde klinik araştırma görevlisi ve kardiyoloji uzmanı asistanıdır. Atriyal fibrilasyon ve kalp yetmezliği olan hastaların bakımını iyileştirmek için büyük veri, makine öğrenimi ve yapay zekayı kullanma konusunda uzmanlaşmıştır.
-              <a href="https://pubmed.ncbi.nlm.nih.gov/?term=Champsi+A+%5Bauthor%5D&sort=date" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium text-xs">
-                Yayınlarını PubMed'de Görüntüle →
-              </a>
-            </div>
-          )}
+          <InfoTabs calcId={calc.id} />
         </div>
       )}
     </div>
   );
 }
 
-// 2. GKS BİLEŞENİ (FOTOĞRAFTAKİ İKİ SÜTUNLU TASARIM)
+// 2. GKS BİLEŞENİ
 function GksCalc({ calc }) {
   const [vals, setVals] = useState({ goz: 4, verbal: 5, motor: 6 });
   const [result, setResult] = useState(null);
@@ -641,7 +699,7 @@ function GksCalc({ calc }) {
   );
 }
 
-// 3. CHECKLIST (WELLS PE) BİLEŞENİ
+// 3. CHECKLIST BİLEŞENİ
 function ChecklistCalc({ calc }) {
   const [checked, setChecked] = useState({});
   const [result, setResult] = useState(null);
@@ -683,33 +741,89 @@ function ChecklistCalc({ calc }) {
 function BmiCalc({ calc }) {
   const [boy, setBoy] = useState("");
   const [kilo, setKilo] = useState("");
+  const [hedefBmi, setHedefBmi] = useState("25");
   const [result, setResult] = useState(null);
 
   const calculate = () => {
-    const b = parseFloat(boy); const k = parseFloat(kilo);
+    const b = parseFloat(boy);
+    const k = parseFloat(kilo);
+    const hb = parseFloat(hedefBmi);
     if (!b || !k) return;
-    const bmi = k / ((b / 100) ** 2);
-    setResult({ bmi, interp: getInterp(calc.interpret, bmi) });
+
+    const hm = b / 100;
+    const bmi = k / (hm * hm);
+    const bsa = Math.sqrt((b * k) / 3600); // Mosteller Formülü
+    const targetW = hb ? (hb * hm * hm) : null;
+    const interp = getInterp(calc.interpret, bmi);
+
+    setResult({ bmi, bsa, targetW, hb, interp });
   };
 
   return (
     <div className="text-left">
-      <div className="mb-4">
-        <label className="text-sm text-gray-500 mb-1 block font-medium">Boy (cm)</label>
-        <input type="number" value={boy} onChange={(e) => { setBoy(e.target.value); setResult(null); }} placeholder="örn. 175" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition" />
+      <div className="mb-6 border border-gray-200 rounded-xl px-4 py-1 bg-white shadow-sm">
+        <InputRow 
+          label="Ağırlık" 
+          value={kilo} 
+          onChange={(val) => { setKilo(val); setResult(null); }} 
+          unit="kilogram" 
+          placeholder="örn. 70" 
+        />
+        <InputRow 
+          label="Yükseklik" 
+          value={boy} 
+          onChange={(val) => { setBoy(val); setResult(null); }} 
+          unit="santimetre" 
+          placeholder="örn. 185" 
+        />
+        <InputRow 
+          label="Hedef BMI" 
+          subLabel="İsteğe bağlı, hedef BMI'ye ulaşmak için gereken ağırlığı belirlemek için." 
+          value={hedefBmi} 
+          onChange={(val) => { setHedefBmi(val); setResult(null); }} 
+          unit="kg/m²" 
+          placeholder="25" 
+        />
       </div>
-      <div className="mb-5">
-        <label className="text-sm text-gray-500 mb-1 block font-medium">Kilo (kg)</label>
-        <input type="number" value={kilo} onChange={(e) => { setKilo(e.target.value); setResult(null); }} placeholder="örn. 70" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition" />
-      </div>
-      <button onClick={calculate} className="w-full py-3 bg-blue-700 text-white rounded-xl font-medium shadow-sm">Hesapla</button>
+
+      <button onClick={calculate} className="w-full py-4 bg-blue-700 text-white rounded-xl font-bold shadow-sm hover:bg-blue-800 transition">
+        Hesapla
+      </button>
       
       {result && (
-        <div className="mt-6 border-t border-gray-100 pt-6">
-          <div className="p-4 rounded-xl border border-gray-100 bg-white text-center mb-5">
-            <div className="text-5xl font-bold text-gray-800 mb-1">{result.bmi.toFixed(1)}</div>
-            <div className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-3">kg/m²</div>
-            <div className={`p-3 rounded-lg text-sm font-medium ${riskStyle[result.interp.cls]}`}>{result.interp.text}</div>
+        <div className="mt-8 border-t border-gray-100 pt-6">
+          <div className="rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row bg-[#10704c] text-white mb-6">
+            <div className="flex-1 p-5 md:p-6 border-b md:border-b-0 md:border-r border-white/20">
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-4xl font-extrabold">{result.bmi.toFixed(1)}</span>
+                <span className="text-lg font-medium opacity-90">kg/m²</span>
+              </div>
+              <div className="text-sm font-medium opacity-90 leading-relaxed">
+                Vücut Kitle İndeksi ({result.interp.text.split('(')[0].trim()})
+              </div>
+            </div>
+
+            <div className="flex-1 p-5 md:p-6 border-b md:border-b-0 md:border-r border-white/20">
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-4xl font-extrabold">{result.bsa.toFixed(2)}</span>
+                <span className="text-lg font-medium opacity-90">m²</span>
+              </div>
+              <div className="text-sm font-medium opacity-90 leading-relaxed">
+                Vücut Yüzey Alanı
+              </div>
+            </div>
+
+            {result.targetW && (
+              <div className="flex-1 p-5 md:p-6">
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-4xl font-extrabold">{result.targetW.toFixed(0)}</span>
+                  <span className="text-lg font-medium opacity-90">kilogram</span>
+                </div>
+                <div className="text-sm font-medium opacity-90 leading-relaxed">
+                  Vücut Kitle İndeksi (BMI) {result.hb} kg/m² olan kişiler için hedef kilo
+                </div>
+              </div>
+            )}
           </div>
           <InfoTabs calcId={calc.id} />
         </div>
