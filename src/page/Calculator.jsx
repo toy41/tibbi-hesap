@@ -82,11 +82,11 @@ function InfoTabs({ calcId }) {
             "Özetle, Modifiye Glasgow Koma Ölçeği, akut beyin hasarı olan hastaları değerlendirmek için neredeyse evrensel olarak kabul görmüş bir yöntem sunmaktadır. Bileşenlerinin tek bir genel puana toplanması bilgi kaybına yol açar ve şiddet konusunda yalnızca kaba bir kılavuz sağlar. Bazı durumlarda, örneğin ciddi yaralanmaların erken triyajında, ölçeğin motor bileşeninin kısaltılmış bir versiyonunun, Basitleştirilmiş Motor Ölçeği'nde (SMS) olduğu gibi, değerlendirilmesi GCS kadar iyi sonuç verebilir ve önemli ölçüde daha az karmaşıktır. Bununla birlikte, SMS daha hafif yaralanmaları olan hastalarda daha az bilgilendirici olabilir."
           ],
           edebiyat: [
-            { kat: "Orijinal/Birincil Referans", ref: "Teasdale G, Jennett B. Koma ve bozulmuş bilinç değerlendirmesi. Pratik bir ölçek. Lancet. 1974 13 Temmuz;2(7872):81-4." },
-            { kat: "Doğrulama", ref: "Moore L, Lavoie A, Camden S, Le Sage N, Sampalis JS, Bergeron E, Abdous B. Glasgow Koma Skoru'nun istatistiksel doğrulanması. J Trauma. 2006 Haziran;60(6):1238-43." },
-            { kat: "Doğrulama", ref: "Reith FC, Van den brande R, Synnot A, Gruen R, Maas AI. Glasgow Koma Ölçeğinin güvenilirliği: sistematik bir inceleme. Yoğun Bakım Tıbbı. 2016;42(1):3-15." },
-            { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B. Koma ve beyin hasarının şiddetinin değerlendirilmesi. Anesteziyoloji. 1978;49:225-226." },
-            { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B, Murray L, Murray G. Glasgow koma ölçeği: toplamak ya da toplamamak. Lancet. 1983 Eylül 17;2(8351):678." }
+            { kat: "Orijinal/Birincil Referans", ref: "Teasdale G, Jennett B. Koma ve bozulmuş bilinç değerlendirmesi. Pratik bir ölçek. Lancet. 1974 13 Temmuz;2(7872):81-4.",link:"https://www.ncbi.nlm.nih.gov/pubmed/4136544" },
+            { kat: "Doğrulama", ref: "Moore L, Lavoie A, Camden S, Le Sage N, Sampalis JS, Bergeron E, Abdous B. Glasgow Koma Skoru'nun istatistiksel doğrulanması. J Trauma. 2006 Haziran;60(6):1238-43.",link:"https://www.ncbi.nlm.nih.gov/pubmed/16766966" },
+            { ref: "Reith FC, Van den brande R, Synnot A, Gruen R, Maas AI. Glasgow Koma Ölçeğinin güvenilirliği: sistematik bir inceleme. Yoğun Bakım Tıbbı. 2016;42(1):3-15.",link:"https://www.ncbi.nlm.nih.gov/pubmed/26564211" },
+            { kat: "Diğer Referanslar", ref: "Teasdale G, Jennett B. Koma ve beyin hasarının şiddetinin değerlendirilmesi. Anesteziyoloji. 1978;49:225-226.",link:"https://www.ncbi.nlm.nih.gov/pubmed/686455" },
+            { ref: "Teasdale G, Jennett B, Murray L, Murray G. Glasgow koma ölçeği: toplamak ya da toplamamak. Lancet. 1983 Eylül 17;2(8351):678.",link:"https://www.ncbi.nlm.nih.gov/pubmed/6136811" }
           ],
           creator: { name: "Prof. Graham Teasdale & Prof. Bryan Jennett", title: "Nöroşirürji Uzmanları", bio: "Skala, 1974 yılında Glasgow Üniversitesi'nde kafa travması geçiren hastaların bilinç düzeyini standartlaştırmak amacıyla geliştirilmiştir." }
         };
@@ -130,9 +130,9 @@ function InfoTabs({ calcId }) {
             ]}
           ],
           edebiyat: [
-            { kat: "Orijinal/Birincil Referans", ref: "Wells PS, Anderson DR, Rodger M, Stiell I, Dreyer JF, Barnes D, Forgie M, Kovacs G, Ward J, Kovacs MJ. Excluding pulmonary embolism at the bedside without diagnostic imaging: management of patients with suspected pulmonary embolism presenting to the emergency department by using a simple clinical model and d-dimer. Ann Intern Med. 2001 Jul 17;135(2):98-107." },
-            { kat: "Doğrulama", ref: "Wolf SJ, McCubbin TR, Feldhaus KM, Faragher JP, Adcock DM. Prospective validation of Wells Criteria in the evaluation of patients with suspected pulmonary embolism. Ann Emerg Med. 2004 Nov;44(5):503-10." },
-            { kat: "Diğer Referanslar", ref: "van Belle A, Buller HR, Huisman MV, et al. Effectiveness of managing suspected pulmonary embolism using an algorithm combining clinical probability, D-dimer testing, and computed tomography. JAMA : the journal of the American Medical Association. Jan 11 2006;295(2):172-179." }
+            { kat: "Orijinal/Birincil Referans", ref: "Wells PS, Hirsh J, Anderson DR ve ark. Derin ven trombozunun klinik değerlendirmesinin doğruluğu. Lancet. 1995;345(8961):1326-30.",link:"https://www.ncbi.nlm.nih.gov/pubmed/7752753" },
+            { kat: "Doğrulama", ref: "Scarvelis D, Wells PS. Derin ven trombozunun tanı ve tedavisi. CMAJ. 2006 24 Ekim;175(9):1087-92. İnceleme. Düzeltme: CMAJ. 2007 20 Kasım;177(11):1392.",link:"https://www.ncbi.nlm.nih.gov/pubmed/17060659" },
+            { kat: "Diğer Referanslar", ref: "Wells PS, Owen C, Doucette S, Fergusson D, Tran H. Bu hastada derin ven trombozu var mı? JAMA. 2006 11 Ocak;295(2):199-207. İnceleme",link:"https://www.ncbi.nlm.nih.gov/pubmed/16403932" }
           ],
           creator: { name: "Dr. Philip S. Wells", title: "Hematoloji Profesörü", bio: "Ottawa Üniversitesi'nde Hematoloji Bölüm Başkanıdır. Venöz tromboembolizm teşhisinde dünyaca ünlü Wells skorlarının yaratıcısıdır." }
         };
@@ -163,9 +163,9 @@ function InfoTabs({ calcId }) {
           edebiyat: [
             { kat: "Orijinal/Birincil Referans", ref: "Gadzik J. 'How much should I weigh?' Quetelet's equation, upper weight limits, and BMI prime. Connecticut Medicine. (2006). 70 (2): 81–8. PMID 16768059.", link: "https://pubmed.ncbi.nlm.nih.gov/16768059/" },
             { kat: "Klinik Uygulama Kılavuzları", ref: "Rubino F, Cummings DE, Eckel RH, et al. Definition and diagnostic criteria of clinical obesity. Lancet Diabetes Endocrinol. 2025;13(3):221-262.", link: "https://pubmed.ncbi.nlm.nih.gov/39824205/" },
-            { kat: "Diğer Referanslar", ref: "BMI Classification. Global Database on Body Mass Index. World Health Organization. 2006. Retrieved July 27, 2012." },
-            { ref: "Support Removal of BMI as a Standard Measure in Medicine and Recognizing Culturally-Diverse and Varied Presentations of Eating Disorders H-440.800. Retrieved March 17, 2025." },
-            { ref: "Adult BMI Categories, Centers for Disease Control and Prevention. Retrieved March 16, 2025." }
+            { kat: "Diğer Referanslar", ref: "BMI Classification. Global Database on Body Mass Index. World Health Organization. 2006. Retrieved July 27, 2012.", link: "https://www.who.int/health-topics/obesity#tab=tab_1" },
+            { ref: "Support Removal of BMI as a Standard Measure in Medicine and Recognizing Culturally-Diverse and Varied Presentations of Eating Disorders H-440.800. Retrieved March 17, 2025.",link:"https://policysearch.ama-assn.org/policyfinder/detail/bmi?uri=%2FAMADoc%2FHOD.xml-H-440.800.xml" },
+            { ref: "Adult BMI Categories, Centers for Disease Control and Prevention. Retrieved March 16, 2025.", link:"https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html" }
           ],
           creator: { name: "Adolphe Quetelet", title: "Matematikçi", bio: "BMI'ın temeli olan Quetelet İndeksi'ni 1832 yılında insan büyüme oranlarını tanımlamak için geliştirilmiştir." }
         };
