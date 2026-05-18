@@ -395,7 +395,7 @@ export const calculators = [
         { kat: "Orijinal/Birincil Referans", ref: "Cox JL, Holden JM, Sagovsky R. Doğum sonrası depresyonun tespiti. 10 maddelik Edinburgh doğum sonrası depresyon ölçeğinin geliştirilmesi. Br J Psychiatry. 1987;150:782-786.", link: "https://pubmed.ncbi.nlm.nih.gov/3651732/" },
         { kat: "Doğrulama", ref: "Cox JL, Chapman G, Murray D, Jones P. Doğum sonrası depresyon ölçeğinin (EPDS) doğum yapmamış kadınlarda geçerliliği. J Affect Disord. 1996;39(3):185-189.", link: "https://pubmed.ncbi.nlm.nih.gov/8856422/" }
       ],
-      creator: { name: "Dr. John L. Cox", title: "Postnatal depresyon araştırmacıları", bio: "John L. Cox, MD, Keele Üniversitesi'nde psikiyatri profesörü emeritus ve Kraliyet Psikiyatristler Koleji'nin eski başkanıdır. Dr. Cox, perinatal ruh sağlığı ve kültürlerarası psikiyatriye odaklanan önde gelen bir araştırmacı olup, Dünya Psikiyatri Birliği Genel Sekreteri olarak görev yapması da dahil olmak üzere çalışmalarıyla uluslararası alanda tanınmaktadır." }
+      creator: { name: "İZMİTLİ", title: "kocaeli ", bio: "kırkbir" }
     }
   },
 ];
