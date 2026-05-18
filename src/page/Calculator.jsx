@@ -24,7 +24,14 @@ export default function Calculator() {
 
   if (!calc) return <div className="p-6">Hesaplayıcı bulunamadı.</div>;
 
-  const catColors = { kardiyoloji: "bg-red-50 text-red-700", acil: "bg-orange-50 text-orange-700", noroloji: "bg-purple-50 text-purple-700", genel: "bg-teal-50 text-teal-700" };
+  const catColors = { 
+    kardiyoloji: "bg-red-50 text-red-700", 
+    acil: "bg-orange-50 text-orange-700", 
+    noroloji: "bg-purple-50 text-purple-700", 
+    psikiyatri: "bg-indigo-50 text-indigo-700", 
+    "kadin-dogum": "bg-pink-50 text-pink-700",  
+    genel: "bg-teal-50 text-teal-700" 
+  };
   const ActiveCalculator = componentMap[calc.type] || (() => <div>Bileşen bulunamadı.</div>);
 
   return (

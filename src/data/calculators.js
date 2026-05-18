@@ -228,7 +228,7 @@ export const calculators = [
     id: "epds",
     name: "Edinburgh Doğum Sonrası Depresyon Ölçeği (EPDS)",
     description: "Doğum sonrası dönemde depresyon taraması.",
-    category: "genel",
+    category: "kadin-dogum",
     type: "epds",
     items: [
       {

@@ -8,6 +8,8 @@ const categories = [
   { id: "kardiyoloji", label: "❤️ Kardiyoloji" },
   { id: "acil", label: "🚨 Acil Tıp" },
   { id: "noroloji", label: "🧠 Nöroloji" },
+  { id: "psikiyatri", label: "🧘‍♀️ Psikiyatri" }, 
+  { id: "kadin-dogum", label: "🤰 Kadın Hastalıkları ve Doğum" }, 
   { id: "genel", label: "🩺 Genel" },
   { id: "favoriler", label: "⭐ Favoriler" },
 ];
@@ -16,6 +18,8 @@ const catColors = {
   kardiyoloji: "bg-red-50 text-red-700",
   acil: "bg-orange-50 text-orange-700",
   noroloji: "bg-purple-50 text-purple-700",
+  psikiyatri: "bg-indigo-50 text-indigo-700", 
+  "kadin-dogum": "bg-pink-50 text-pink-700",  
   genel: "bg-teal-50 text-teal-700",
 };
 
