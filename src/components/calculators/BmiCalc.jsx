@@ -68,18 +68,16 @@ export default function BmiCalc({ calc }) {
             data={calc.infoData}
             customYonetim={
               <div className="space-y-5">
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
-                  <p className="text-sm text-gray-700 leading-relaxed font-normal">{calc.infoData.yonetimMetni}</p>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
-                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
-                    {calc.infoData.kritikMetni}
-                    <a href={calc.infoData.kritikLink.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold">{calc.infoData.kritikLink.text}</a>
-                    {calc.infoData.kritikMetniSon}
-                  </p>
-                </div>
+                {calc.infoData.kritikMaddeler && (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                    <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
+                      {calc.infoData.kritikMaddeler.map((m, i) => (
+                        <li key={i}>{m}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             }
             customKanit={

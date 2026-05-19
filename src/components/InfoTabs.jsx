@@ -36,17 +36,52 @@ export default function InfoTabs({ data, customTavsiye, customYonetim, customKan
 
           <div className="p-4 rounded-xl border border-gray-200 bg-white shadow-sm">
             {customYonetim ? customYonetim : (
-              data.yonetim && (
-                <div className="space-y-3">
-                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1">YÖNETMEK</h3>
-                  {data.yonetim.map((y, i) => (
-                    <div key={i} className={`p-3 rounded-lg border ${y.cls}`}>
-                      <div className="font-bold mb-1">{y.score}</div>
-                      <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
+              <div className="space-y-5">
+                {/* 1. KISIM: YÖNETMEK (Yeşil, Sarı, Kırmızı kutular) */}
+                {data.yonetim && data.yonetim.length > 0 && (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
+                    <div className="space-y-3">
+                      {data.yonetim.map((y, i) => (
+                        <div key={i} className={`p-3 rounded-lg border ${y.cls || "bg-gray-50 border-gray-200"}`}>
+                          {y.score && <div className="font-bold mb-1 text-sm">{y.score}</div>}
+                          <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )
+                  </div>
+                )}
+
+                {/* 2. KISIM: KRİTİK EYLEMLER (Gri Kutudaki Maddeli Liste) */}
+                {data.kritikMaddeler && data.kritikMaddeler.length > 0 && (
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-800">
+                      <ul className="list-disc ml-5 space-y-2 text-sm leading-relaxed font-normal text-gray-700">
+                        {data.kritikMaddeler.map((madde, i) => (
+                          <li key={i}>{madde}</li>
+                        ))}
+                      </ul>
+                      
+                      {/* Varsa Alıntı/Ekstra Metin Ekleme (GKS için) */}
+                      {data.kritikAlinti && (
+                        <div className="mt-4 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-700 leading-relaxed font-normal italic">
+                            "{data.kritikAlinti.metin}" 
+                            {data.kritikAlinti.kaynak && data.kritikAlinti.link ? (
+                              <a href={data.kritikAlinti.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-semibold ml-1">
+                                ({data.kritikAlinti.kaynak})
+                              </a>
+                            ) : (
+                              <span className="font-semibold ml-1">({data.kritikAlinti.kaynak})</span>
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -90,7 +125,7 @@ export default function InfoTabs({ data, customTavsiye, customYonetim, customKan
           {data.degerlendirme && (
             <div>
               <h3 className="font-bold text-gray-900 mb-3 border-b pb-1 uppercase tracking-wider text-xs">Kanıt Değerlendirmesi</h3>
-              <div className="space-y-4 leading-relaxed text-gray-600">
+              <div className="space-y-2 leading-relaxed text-gray-600">
                 {data.degerlendirme.map((item, idx) => {
                   if (typeof item === "string") return <p key={idx}>{item}</p>;
                   if (item.type === "p") return <p key={idx}>{item.text}</p>;

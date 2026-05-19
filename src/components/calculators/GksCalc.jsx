@@ -49,22 +49,33 @@ export default function GksCalc({ calc }) {
               <div className="space-y-5">
                 <div>
                   <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
-                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
-                    <li>Akut dönemde klinik yönetim kararları yalnızca GCS skoruna dayandırılmamalıdır.</li>
-                    <li>Travma geçiren bir hastanın Glasgow Koma Ölçeği (GCS) değeri ≤8 ise ve muayene veya görüntüleme bulgularına dayanarak hastanın hava yolunu koruyamayacağına veya klinik seyrinin kötüleşmesinin beklendiğine dair klinik endişe varsa, entübasyon düşünülebilir.</li>
-                    <li>Herhangi bir hastada, Glasgow Koma Ölçeği'nde (GCS) hızla düşüş veya dalgalanmalar endişe vericidir ve entübasyon, hastanın genel klinik tablosu bağlamında değerlendirilmelidir.</li>
-                  </ul>
+                  <div className="space-y-3">
+                    {calc.infoData.yonetim.map((y, i) => (
+                      <div key={i} className={`p-3 rounded-lg border ${y.cls}`}>
+                        <div className="font-bold mb-1">{y.score}</div>
+                        <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
-                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal mb-4">
-                    <li>GCS skoru yaygın olarak ve çeşitli ortamlarda benimsenmiş olsa da, nicel amaçlarla kullanılmak üzere tasarlanmamıştır.</li>
-                    <li>Akut dönemde klinik yönetim kararları yalnızca GCS skoruna dayandırılmamalıdır.</li>
+                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">
+                    {calc.infoData.kritikBaslik}
+                  </h3>
+                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed mb-4">
+                    {calc.infoData.kritikMaddeler.map((m, i) => (
+                      <li key={i}>{m}</li>
+                    ))}
                   </ul>
-                  <p className="text-sm text-gray-700 leading-relaxed font-normal mb-1">GCS'nin yaratıcılarından:</p>
-                  <p className="text-sm text-gray-700 leading-relaxed font-normal">
-                    “GCS’nin tek başına, ne komayı izlemek ne de beyin hasarının şiddetini değerlendirmek veya sonucu tahmin etmek için kullanılmasını hiçbir zaman önermedik.” (<a href="https://cdn.ps.emap.com/wp-content/uploads/sites/3/2014/10/141015Forty-years-on-updating-the-Glasgow-coma-scale.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Teasdale 2014</a>)
-                  </p>
+                  {calc.infoData.kritikAlinti && (
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      "{calc.infoData.kritikAlinti.metin}" (
+                      <a href={calc.infoData.kritikAlinti.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        {calc.infoData.kritikAlinti.kaynak}
+                      </a>
+                      )
+                    </p>
+                  )}
                 </div>
               </div>
             }
@@ -74,7 +85,11 @@ export default function GksCalc({ calc }) {
                 <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                   <table className="w-full text-left bg-white text-xs">
                     <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
-                      <tr><th className="py-2.5 px-3 font-semibold">Bileşen</th><th className="py-2.5 px-3 font-semibold">Cevap</th><th className="py-2.5 px-3 font-semibold text-center">Puanlar</th></tr>
+                      <tr>
+                        <th className="py-2.5 px-3 font-semibold">Bileşen</th>
+                        <th className="py-2.5 px-3 font-semibold">Cevap</th>
+                        <th className="py-2.5 px-3 font-semibold text-center">Puanlar</th>
+                      </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {calc.infoData.stats.map((s, i) => (
@@ -88,8 +103,7 @@ export default function GksCalc({ calc }) {
                   </table>
                 </div>
                 <p className="text-[11px] text-gray-500 mt-3 leading-relaxed italic">
-                  *Aşağıdakilerden herhangi biri nedeniyle bazı bileşenler test edilemeyebilir (bu liste kapsamlı değildir):<br/>
-                  Göz: Yerel yaralanma ve/veya ödem. Sözel: entübasyon. Tüm (göz, sözel, motor): sedasyon, paralizi ve ventilasyon yoluyla tüm tepkilerin ortadan kaldırılması.
+                  *Aşağıdakilerden herhangi biri nedeniyle bazı bileşenler test edilemeyebilir bu liste kapsamlı değildir.
                 </p>
               </div>
             }

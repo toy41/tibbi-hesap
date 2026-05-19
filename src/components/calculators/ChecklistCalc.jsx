@@ -38,48 +38,25 @@ export default function ChecklistCalc({ calc }) {
               <div className="space-y-5">
                 <div>
                   <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">YÖNETMEK</h3>
-                  <div className="mb-4">
-                    <h4 className="font-bold text-gray-800 text-sm mb-2 underline">Üç Katmanlı Model</h4>
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg border bg-green-50 border-green-100">
-                        <div className="font-bold mb-1 text-green-800">Hastanın düşük riskli olduğu belirlendi (&lt;2 puan: %1,3 PE görülme sıklığı):</div>
-                        <div className="text-sm leading-relaxed text-green-700 mb-2">Pulmoner emboliyi ekarte etmek için d-dimer testi düşünülebilir. Alternatif olarak, PERC gibi bir ekarte etme kriteri düşünülebilir.</div>
-                        <ul className="list-disc ml-5 text-sm text-green-700"><li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li><li>Dimer pozitif ise CTA'yı değerlendirin.</li></ul>
+                  <div className="space-y-3">
+                    {calc.infoData.yonetim.map((y, i) => (
+                      <div key={i} className={`p-3 rounded-lg border ${y.cls}`}>
+                        <div className="font-bold mb-1 text-sm">{y.score}</div>
+                        <div className="text-sm leading-relaxed opacity-90">{y.text}</div>
                       </div>
-                      <div className="p-3 rounded-lg border bg-yellow-50 border-yellow-100">
-                        <div className="font-bold mb-1 text-yellow-800">Hastanın orta riskli olduğu belirlendi (2-6 puan arası skor, %16,2 PE görülme sıklığı):</div>
-                        <div className="text-sm leading-relaxed text-yellow-700 mb-2">Yüksek hassasiyetli d-dimer testi veya BT anjiyografisi düşünülmelidir.</div>
-                        <ul className="list-disc ml-5 text-sm text-yellow-700"><li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li><li>Dimer pozitif ise CTA'yı değerlendirin.</li></ul>
-                      </div>
-                      <div className="p-3 rounded-lg border bg-red-50 border-red-100">
-                        <div className="font-bold mb-1 text-red-800">Hastanın yüksek riskli olduğu belirlendi (skor &gt;6 puan: %37,5 PE görülme sıklığı):</div>
-                        <div className="text-sm leading-relaxed text-red-700">BT anjiyografisi düşünülmelidir. D-dimer testi önerilmemektedir.</div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
+                </div>
+                {calc.infoData.kritikMaddeler && (
                   <div>
-                    <h4 className="font-bold text-gray-800 text-sm mb-2 underline">İki Katmanlı Model</h4>
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg border bg-green-50 border-green-100">
-                        <div className="font-bold mb-1 text-green-800">Hastanın riski "PE olasılığı düşük" olarak belirlenmiştir (0-4 puan, %12,1 PE görülme sıklığı):</div>
-                        <div className="text-sm leading-relaxed text-green-700 mb-2">Yüksek hassasiyetli d-dimer testi düşünülmelidir.</div>
-                        <ul className="list-disc ml-5 text-sm text-green-700"><li>Dimer negatif ise tetkiklerin durdurulmasını düşünün.</li><li>Dimer pozitif ise CTA'yı değerlendirin.</li></ul>
-                      </div>
-                      <div className="p-3 rounded-lg border bg-red-50 border-red-100">
-                        <div className="font-bold mb-1 text-red-800">Hastanın riski "PE olasılığı yüksek" olarak belirlenmiştir (&gt;4 puan, %37,1 PE görülme sıklığı):</div>
-                        <div className="text-sm leading-relaxed text-red-700">BT anjiyografi (CTA) testi düşünülmelidir.</div>
-                      </div>
-                    </div>
+                    <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
+                    <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
+                      {calc.infoData.kritikMaddeler.map((m, i) => (
+                        <li key={i}>{m}</li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-3 border-b border-gray-100 pb-1 uppercase">KRİTİK EYLEMLER</h3>
-                  <ul className="list-disc ml-5 space-y-2 text-sm text-gray-700 leading-relaxed font-normal">
-                    <li>Yeni nesil d-dimer'in yüksek duyarlılığı ancak düşük özgüllüğü (yaklaşık %50) göz önüne alındığında, yüksek riskli kabul edilen hastaların BT anjiyografi ile değerlendirilmesi gerekmektedir.</li>
-                    <li>Özellikle durumu stabil olmayan hastalarda, canlandırma çabalarını asla tanı testleri için geciktirmeyin.</li>
-                    <li>Tanı testlerinden önce mutlaka anamnez ve muayene yapılmalıdır.</li>
-                  </ul>
-                </div>
+                )}
               </div>
             }
             customKanit={
